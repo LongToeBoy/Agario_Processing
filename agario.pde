@@ -1,7 +1,7 @@
 Cell newCell;
 ArrayList<Cell> cells;
 int cellsCount=50;
-int c=0;
+int boundryRad=1200;;
 void setup() {
   size(600, 600, P3D);
   genCells();
@@ -10,13 +10,13 @@ void setup() {
 
 void draw() {
   background(255);
+  drawGrid();
   noFill();
   stroke(255, 0, 0);
-  circle(width/2, height/2, 600);
+  circle(width/2, height/2, boundryRad);
+  
   for (int i=0; i<cells.size(); i++) {
-    Cell cell=cells.get(i);
-
-    cell.drawCell();
+    Cell cell=cells.get(i);  
     cell.checkTouch(cells);
     cell.move();
     for (Cell cell1 : cells) {
@@ -29,17 +29,20 @@ void draw() {
       cells.remove(cell);
       i--;
     }
+    cell.drawCell();
   }
 
-  if (cells.size>0) {
+  if (cells.size()>0) {
     Cell player=cells.get(cells.size()-1);
     //translate(player.position.x, player.position.y);
     player.chase(new Point((mouseX-width/2)*player.radius*7+player.position.x, (mouseY-height/2)*player.radius*7+player.position.y));
     player.move();
-    println("("+mouseX+":"+mouseY+")");
-    //camera(player.position.x,player.position.y,0,player.position.x,player.position.y,0,0,0,0);
-
-    //camera(player.position.x, player.position.y, ((player.radius*7+1)/2.0) / tan(PI*30.0 / 180.0), player.position.x, player.position.y, 0, 0.0, 1.0, 0.0);
+    //println("("+mouseX+":"+mouseY+")");
+    camera(player.position.x, player.position.y, ((player.radius*boundryRad)/(player.radius+100)) / tan(PI*30.0 / 180.0), player.position.x, player.position.y, 0, 0.0, 1.0, 0.0);
+    println((player.radius*boundryRad)/(player.radius+boundryRad));
+  }
+  else{
+   genCells(); 
   }
 }
 void genCells() {
@@ -47,6 +50,9 @@ void genCells() {
   for (int i=0; i<cellsCount; i++) {
     cells.add(new Cell(new Point(random(width), random(height)), random(10, 30), color(random(255), random(255), random(255))));
   }
+}
+void drawGrid(){
+  
 }
 void mousePressed() {
 
